@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgenteWeb — Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>🌐 AgenteWeb</h1>
+      <p>Systema autónomo de presencia digital</p>
+    </header>
+
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="pipeline">Pipeline</button>
+      <button class="tab-btn" data-tab="mapa">Mapa</button>
+      <button class="tab-btn" data-tab="negocios">Negocios</button>
+      <button class="tab-btn" data-tab="ingresos">Ingresos</button>
+      <button class="tab-btn" data-tab="config">Config</button>
+    </nav>
+
+    <main class="content">
+      <!-- Pipeline Tab -->
+      <section id="tab-pipeline" class="tab-content active">
+        <h2>🚀 Pipeline Autónomo</h2>
+        <div id="pipeline-status" class="status-card">
+          <p>Cargando estado del ciclo...</p>
+        </div>
+        <div class="pipeline-stats" id="pipeline-stats"></div>
+        <button id="btn-run-now" class="btn btn-primary">Ejecutar ahora</button>
+      </section>
+
+      <!-- Mapa Tab -->
+      <section id="tab-mapa" class="tab-content">
+        <h2>🗺️ Mapa de Negocios</h2>
+        <div id="map" class="map-container"></div>
+      </section>
+
+      <!-- Negocios Tab -->
+      <section id="tab-negocios" class="tab-content">
+        <h2>📋 Negocios Escaneados</h2>
+        <div class="filters">
+          <select id="filter-estado" class="select">
+            <option value="">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="contactado">Contactado</option>
+            <option value="pagado">Pagado</option>
+            <option value="entregado">Entregado</option>
+          </select>
+          <button id="btn-export" class="btn btn-secondary">Exportar CSV</button>
+        </div>
+        <div class="table-container">
+          <table id="businesses-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Zona</th>
+                <th>Score</th>
+                <th>Estado</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody id="businesses-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Ingresos Tab -->
+      <section id="tab-ingresos" class="tab-content">
+        <h2>💰 Ingresos</h2>
+        <div class="stats-grid" id="financial-stats"></div>
+        <canvas id="revenue-chart" width="400" height="200"></canvas>
+      </section>
+
+      <!-- Config Tab -->
+      <section id="tab-config" class="tab-content">
+        <h2>⚙️ Configuración</h2>
+        <div class="config-section">
+          <div class="config-item">
+            <label>Scheduler Activo</label>
+            <button id="btn-toggle-scheduler" class="btn btn-primary">Pausar</button>
+          </div>
+          <div class="config-item">
+            <label>Max Emails/día</label>
+            <input type="number" id="input-max-emails" value="50" class="input">
+          </div>
+          <div class="config-item">
+            <label>Log de errores (últimas 24h)</label>
+            <pre id="error-log" class="log-area">Cargando...</pre>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/api.js"><\/script>
+  <script src="js/map.js"><\/script>
+  <script src="js/pipeline.js"><\/script>
+  <script src="js/dashboard.js"><\/script>
+</body>
+</html>
