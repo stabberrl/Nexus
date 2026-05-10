@@ -1,3 +1,0 @@
-# Build in C:\ProgramData to avoid WDAC restrictions
-[build]
-target-dir = "C:\\ProgramData\\tavern-target"
