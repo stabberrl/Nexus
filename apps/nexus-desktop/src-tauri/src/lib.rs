@@ -1,6 +1,15 @@
 use std::process::{Child, Command, Stdio};
 use std::sync::Mutex;
+use std::time::Duration;
 use tauri::Manager;
+
+fn http_agent(timeout_secs: u64) -> ureq::Agent {
+    ureq::AgentBuilder::new()
+        .timeout_connect(Duration::from_secs(timeout_secs))
+        .timeout_read(Duration::from_secs(timeout_secs))
+        .timeout_write(Duration::from_secs(timeout_secs))
+        .build()
+}
 
 struct BackendProcess(Mutex<Option<Child>>);
 
@@ -61,9 +70,10 @@ fn start_backend(root: &std::path::Path) -> Option<Child> {
 
 fn wait_for_backend(timeout_secs: u64) -> bool {
     let url = "http://127.0.0.1:8000/";
+    let agent = http_agent(1);
     let start = std::time::Instant::now();
     while start.elapsed().as_secs() < timeout_secs {
-        if let Ok(resp) = ureq::get(url).timeout(std::time::Duration::from_secs(1)).call() {
+        if let Ok(resp) = agent.get(url).call() {
             if resp.status() == 200 {
                 return true;
             }
@@ -75,10 +85,8 @@ fn wait_for_backend(timeout_secs: u64) -> bool {
 
 #[tauri::command]
 fn get_backend_status() -> String {
-    match ureq::get("http://127.0.0.1:8000/")
-        .timeout(std::time::Duration::from_secs(2))
-        .call()
-    {
+    let agent = http_agent(2);
+    match agent.get("http://127.0.0.1:8000/").call() {
         Ok(resp) => {
             if resp.status() == 200 {
                 "online".to_string()
@@ -90,6 +98,17 @@ fn get_backend_status() -> String {
     }
 }
 
+fn run_event_handler(app: &tauri::AppHandle, event: tauri::RunEvent) {
+    if let tauri::RunEvent::ExitRequested { .. } = event {
+        let state = app.state::<BackendProcess>();
+        if let Some(ref mut child) = *state.0.lock().unwrap() {
+            println!("[Nexus] Deteniendo backend...");
+            let _ = child.kill();
+            let _ = child.wait();
+        }
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -97,7 +116,6 @@ pub fn run() {
         .manage(BackendProcess(Mutex::new(None)))
         .invoke_handler(tauri::generate_handler![get_backend_status])
         .setup(|app| {
-            // Iniciar backend Python
             if let Some(root) = find_project_root() {
                 println!("[Nexus] Project root: {:?}", root);
                 if let Some(child) = start_backend(&root) {
@@ -105,7 +123,6 @@ pub fn run() {
                     let state = app.state::<BackendProcess>();
                     *state.0.lock().unwrap() = Some(child);
 
-                    // Esperar a que el backend esté listo
                     if wait_for_backend(15) {
                         println!("[Nexus] Backend listo!");
                     } else {
@@ -125,17 +142,7 @@ pub fn run() {
             }
             Ok(())
         })
-        .on_event(|app, event| {
-            if let tauri::RunEvent::ExitRequested { .. } = event {
-                // Matar backend al cerrar
-                let state = app.state::<BackendProcess>();
-                if let Some(ref mut child) = *state.0.lock().unwrap() {
-                    println!("[Nexus] Deteniendo backend...");
-                    let _ = child.kill();
-                    let _ = child.wait();
-                }
-            }
-        })
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while building tauri application")
+        .run(run_event_handler);
 }

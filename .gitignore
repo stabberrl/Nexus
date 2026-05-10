@@ -37,3 +37,7 @@ fix-vbs.bat
 fix-vbs.ps1
 fix-vbs-final.bat
 disable-wdac-final.bat
+
+# Otros proyectos en el workspace
+the-olds-greg-tavern/
+BusinessScanner/
