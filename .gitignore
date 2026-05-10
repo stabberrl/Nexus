@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+*.egg-info/
+dist/
+
+# Node
+node_modules/
+apps/nexus-desktop/dist/
+
+# Rust
+apps/nexus-desktop/src-tauri/target/
+
+# Data (runtime)
+data/nexus_memory.db
+data/chroma_db/
+data/documents/
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Scripts (temp build helpers)
+fix-vbs.bat
+fix-vbs.ps1
+fix-vbs-final.bat
+disable-wdac-final.bat
