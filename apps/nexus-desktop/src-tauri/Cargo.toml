@@ -5,6 +5,8 @@ description = "Nexus AI - Asistente de IA personal"
 authors = ["Nexus"]
 edition = "2021"
 
+[package.metadata]
+
 [lib]
 name = "nexus_desktop_lib"
 crate-type = ["lib", "cdylib", "staticlib"]

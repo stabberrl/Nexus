@@ -33,6 +33,28 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Debug - list icon files
+        shell: pwsh
+        run: |
+          echo "=== Current directory ==="
+          Get-Location
+          echo "=== src-tauri/icons contents ==="
+          Get-ChildItem -Path src-tauri/icons -Recurse
+          echo "=== tauri.conf.json ==="
+          Get-Content src-tauri/tauri.conf.json
+
+      - name: Generate icons with Tauri CLI (fallback)
+        run: npx tauri icon src-tauri/icons/icon.png
+        continue-on-error: true
+
+      - name: Debug - list icon files after generation
+        shell: pwsh
+        run: |
+          echo "=== src-tauri/icons after tauri icon ==="
+          Get-ChildItem -Path src-tauri/icons -Recurse
+          echo "=== File sizes ==="
+          Get-ChildItem -Path src-tauri/icons | ForEach-Object { Write-Host "$($_.Name): $($_.Length) bytes" }
+
       - name: Build Tauri app
         run: npm run tauri build
 

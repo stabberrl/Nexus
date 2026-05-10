@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-parchment: #f5e6c8;
+  --color-ink: #2c1810;
+  --color-gold: #c9a84c;
+  --color-blood: #8b1a1a;
+  --color-shadow: #1a0f0a;
+  --color-moss: #4a6741;
+  --color-night: #0d0d1a;
+  --color-ember: #ff6b35;
+}
+
+@layer base {
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+  }
+}
+
+@layer utilities {
+  .text-shadow-glow {
+    text-shadow: 0 0 10px rgba(201, 168, 76, 0.5);
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #4a3f35 #1a0f0a;
+  }
+}

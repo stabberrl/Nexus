@@ -85,6 +85,16 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
+### Prospección inicial con Playwright
+
+```powershell
+pip install playwright
+python -m playwright install chromium
+python services/playwright_prospector.py --niche "dentista" --city "Santiago, Chile" --max-results 30 --format both --out leads_dentistas
+```
+
+El script exporta leads normalizados (`json/csv`) con nombre, categoría, teléfono, web, dirección y URL de Maps.
+
 ## ▶️ Ejecución
 
 **Terminal 1 (Ollama):**
