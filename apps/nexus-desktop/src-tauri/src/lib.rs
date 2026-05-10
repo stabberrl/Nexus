@@ -5,9 +5,8 @@ use tauri::Manager;
 
 fn http_agent(timeout_secs: u64) -> ureq::Agent {
     let config = ureq::Agent::config_builder()
-        .timeout_connect(Duration::from_secs(timeout_secs))
-        .timeout_read(Duration::from_secs(timeout_secs))
-        .timeout_write(Duration::from_secs(timeout_secs))
+        .timeout_connect(Some(Duration::from_secs(timeout_secs)))
+        .timeout_global(Some(Duration::from_secs(timeout_secs)))
         .build();
     ureq::Agent::new_with_config(config)
 }
