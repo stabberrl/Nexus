@@ -4,7 +4,7 @@ use std::time::Duration;
 use tauri::Manager;
 
 fn http_agent(timeout_secs: u64) -> ureq::Agent {
-    ureq::AgentBuilder::new()
+    ureq::Agent::builder()
         .timeout_connect(Duration::from_secs(timeout_secs))
         .timeout_read(Duration::from_secs(timeout_secs))
         .timeout_write(Duration::from_secs(timeout_secs))
@@ -101,7 +101,8 @@ fn get_backend_status() -> String {
 fn run_event_handler(app: &tauri::AppHandle, event: tauri::RunEvent) {
     if let tauri::RunEvent::ExitRequested { .. } = event {
         let state = app.state::<BackendProcess>();
-        if let Some(ref mut child) = *state.0.lock().unwrap() {
+        let mut guard = state.0.lock().unwrap();
+        if let Some(ref mut child) = *guard {
             println!("[Nexus] Deteniendo backend...");
             let _ = child.kill();
             let _ = child.wait();
