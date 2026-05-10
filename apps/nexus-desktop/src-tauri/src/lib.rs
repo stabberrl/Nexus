@@ -4,11 +4,12 @@ use std::time::Duration;
 use tauri::Manager;
 
 fn http_agent(timeout_secs: u64) -> ureq::Agent {
-    ureq::Agent::builder()
+    let config = ureq::Agent::config_builder()
         .timeout_connect(Duration::from_secs(timeout_secs))
         .timeout_read(Duration::from_secs(timeout_secs))
         .timeout_write(Duration::from_secs(timeout_secs))
-        .build()
+        .build();
+    ureq::Agent::new_with_config(config)
 }
 
 struct BackendProcess(Mutex<Option<Child>>);
